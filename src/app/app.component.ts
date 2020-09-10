@@ -7,10 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public title: string;
-  public time: string;
 
   constructor() {
     this.title = 'oidc-implicit';
-    this.time = new Date().toISOString();
   }
 }

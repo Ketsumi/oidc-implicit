@@ -5,16 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
-import { CallbackComponent } from './callback/callback.component';
 import { AuthComponent } from './auth/auth.component';
+import { CallbackComponent } from './callback/callback.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ProfileComponent,
-    CallbackComponent,
-    AuthComponent
+    AuthComponent,
+    CallbackComponent
   ],
   imports: [
     BrowserModule,
