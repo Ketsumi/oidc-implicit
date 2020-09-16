@@ -25,7 +25,7 @@ jobs:
         SCOPE: ${{ secrets.SCOPE }}
       run: |
         npm install
-        npm run ng --build --prod --base-href=/oidc-implicit/
+        npm run ng build --prod --base-href=/oidc-implicit/
 
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@3.6.1
