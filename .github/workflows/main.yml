@@ -19,6 +19,7 @@ jobs:
 
     - name: Prepare and deploy
       env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
