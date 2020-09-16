@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages via angular-cli-ghpages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       with:
         node-version: 14.x
 
-    - name: Prepare and deploy
+    - name: Install & Build
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -26,4 +26,11 @@ jobs:
         SCOPE: ${{ secrets.SCOPE }}
       run: |
         npm install
-        npm run ng --deploy --base-href=/oidc-implicit/
+        npm run ng --build --prod --base-href=/oidc-implicit/
+
+    - name: Deploy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: ./
+        CLEAN: true
