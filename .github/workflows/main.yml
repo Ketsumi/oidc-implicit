@@ -26,5 +26,5 @@ jobs:
         SCOPE: ${{ secrets.SCOPE }}
       run: |
         npm install
-        ng deploy --base-href=/oidc-implicit/ --no-silent
+        npm ng deploy --base-href=/oidc-implicit/ --no-silent
         
