@@ -3,7 +3,18 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  oauth: {
+    google: {
+      url: 'https://accounts.google.com/o/oauth2/v2/auth',
+      params: {
+        response_type: '',
+        client_id: '',
+        scope: '',
+        redirect_uri: ''
+      }
+    }
+  }
 };
 
 /*
