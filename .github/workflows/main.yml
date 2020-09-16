@@ -19,7 +19,7 @@ jobs:
 
     - name: Prepare and deploy
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
         RESPONSE_TYPE: ${{ secrets.RESPONSE_TYPE }}
