@@ -23,7 +23,7 @@ export class AuthComponent implements OnInit {
     const par = x => Auth.params(x);
     const uri = x => Auth.uri('https://accounts.google.com/o/oauth2/v2/auth', x);
 
-    return Pipe.pipe(non, sta, mrg, ste, str, par, uri, Pipe.trace('test'))(params);
+    return Pipe.pipe(non, sta, mrg, ste, str, par, uri)(params);
   }
 
   public test() {}
