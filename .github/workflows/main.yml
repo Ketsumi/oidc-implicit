@@ -19,7 +19,6 @@ jobs:
 
     - name: Install & Build
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
         RESPONSE_TYPE: ${{ secrets.RESPONSE_TYPE }}
@@ -29,7 +28,8 @@ jobs:
         npm run ng --build --prod --base-href=/oidc-implicit/
 
     - name: Deploy
-      env:
+      uses: JamesIves/github-pages-deploy-action@3.6.1
+      with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
         FOLDER: ./
