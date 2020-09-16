@@ -18,12 +18,11 @@ jobs:
         node-version: 14.x
 
     - name: Prepare and deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
         RESPONSE_TYPE: ${{ secrets.RESPONSE_TYPE }}
         SCOPE: ${{ secrets.SCOPE }}
-      run: |
-        npm install
-        npm run ng --deploy --base-href=/oidc-implicit/ 
