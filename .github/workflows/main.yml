@@ -29,3 +29,6 @@ jobs:
         REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
         RESPONSE_TYPE: ${{ secrets.RESPONSE_TYPE }}
         SCOPE: ${{ secrets.SCOPE }}
+      run: |
+        npm install
+        npm run ng --build --prod --baseHref=/oidc-implicit/
