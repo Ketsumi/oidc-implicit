@@ -42,8 +42,7 @@ export class Auth {
   }
 
   static store(pair:string[]) {
-    const set = x => [x, window.localStorage.setItem(...(x as [string, string]))];
-    const par = x => x[1] === undefined ? x[0] : null;
+    const set = x => [x, window.localStorage.setItem(...(x as [string, string]))][0];
 
     return Pipe.pipe(set, Pipe.trace('store'))(pair);
   }
