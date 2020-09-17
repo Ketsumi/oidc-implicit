@@ -25,10 +25,10 @@ jobs:
         SCOPE: ${{ secrets.SCOPE }}
       run: |
         npm ci
-        npm run ng build --prod --base-href=/oidc-implicit/
+        npm run ng build --prod --baseHref=/oidc-implicit/
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: /
+        publish_dir: ./dist/oidc-implicit
