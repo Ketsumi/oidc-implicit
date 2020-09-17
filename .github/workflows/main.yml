@@ -24,7 +24,7 @@ jobs:
         RESPONSE_TYPE: ${{ secrets.RESPONSE_TYPE }}
         SCOPE: ${{ secrets.SCOPE }}
       run: |
-        npm install
+        npm ci
         npm run ng build --prod --base-href=/oidc-implicit/
 
     - name: Deploy
@@ -32,5 +32,3 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
-        allow_empty_commit: true
-        enable_jekyll: true
