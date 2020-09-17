@@ -14,17 +14,17 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public authGoogle(params:any=environment.oauth.google.params) {
-    const non = x => [x, { nonce: Auth.nonce(3) }];
-    const sta = x => [...x, { state: Auth.state({ redirectUrl: '/profile' }) }];
-    const mrg = x => Object.assign({}, ...x);
-    const ste = x => Object.assign(x, { state: Auth.encodeState(x.state) });
-    const str = x => [x, Auth.store([x.nonce, x.state])][0];
-    const par = x => Auth.params(x);
+  public google(): void {
+    const non = x => x = { ...x, nonce: Auth.nonce(3) };
+    const sta = x => x = { ...x, state: Auth.state({ redirectUrl: '/profile' }) };
+    const enc = x => x = { ...x, state: Auth.encodeState(x.state) };
+    const str = x => Auth.store(x);
+    const par = x => Auth.param(x);
     const uri = x => Auth.uri('https://accounts.google.com/o/oauth2/v2/auth', x);
+    const pip = Pipe.pipe(non, sta, enc, str, par, uri)(environment.google.param)
 
-    return Pipe.pipe(non, sta, mrg, ste, str, par, uri)(params);
+    window.location.assign(pip);
   }
 
-  public test() {}
+  public test(): void { }
 }
