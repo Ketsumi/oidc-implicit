@@ -65,15 +65,13 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    oauth: {
-        google: {
-            url: 'https://accounts.google.com/o/oauth2/v2/auth',
-            params: {
-                response_type: 'id_token',
-                client_id: '986484840298-lg8and8ts23n47cgs1thkgk5a2uroge0.apps.googleusercontent.com',
-                scope: 'openid email',
-                redirect_uri: 'https://ketsumi.github.io/oidc-implicit/callback'
-            }
+    google: {
+        url: 'https://accounts.google.com/o/oauth2/v2/auth',
+        param: {
+            response_type: 'id_token',
+            client_id: '986484840298-lg8and8ts23n47cgs1thkgk5a2uroge0.apps.googleusercontent.com',
+            scope: 'openid email',
+            redirect_uri: 'https://ketsumi.github.io/oidc-implicit/callback'
         }
     }
 };
@@ -179,15 +177,15 @@ let AuthComponent = class AuthComponent {
     constructor() { }
     ngOnInit() {
     }
-    authGoogle(params = _environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].oauth.google.params) {
-        const non = x => [x, { nonce: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].nonce(3) }];
-        const sta = x => [...x, { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].state({ redirectUrl: '/profile' }) }];
-        const mrg = x => Object.assign({}, ...x);
-        const ste = x => Object.assign(x, { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].encodeState(x.state) });
-        const str = x => [x, _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].store([x.nonce, x.state])][0];
-        const par = x => _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].params(x);
+    google() {
+        const non = x => x = Object.assign(Object.assign({}, x), { nonce: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].nonce(3) });
+        const sta = x => x = Object.assign(Object.assign({}, x), { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].state({ redirectUrl: '/profile' }) });
+        const enc = x => x = Object.assign(Object.assign({}, x), { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].encodeState(x.state) });
+        const str = x => _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].store(x);
+        const par = x => _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].param(x);
         const uri = x => _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].uri('https://accounts.google.com/o/oauth2/v2/auth', x);
-        return _pipe__WEBPACK_IMPORTED_MODULE_5__["Pipe"].pipe(non, sta, mrg, ste, str, par, uri)(params);
+        const pip = _pipe__WEBPACK_IMPORTED_MODULE_5__["Pipe"].pipe(non, sta, enc, str, par, uri)(_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].google.param);
+        window.location.assign(pip);
     }
     test() { }
 };
@@ -288,8 +286,8 @@ class Auth {
         return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(arr, val, str, enc, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('nonce'))(size);
     }
     static state(uri) {
-        const ion = x => Object.assign(x, { iat: new Date().getTime() });
-        const exp = x => Object.assign(x, { exp: x.iat + 600000 });
+        const ion = x => x = Object.assign(Object.assign({}, x), { iat: new Date().getTime() });
+        const exp = x => x = Object.assign(Object.assign({}, x), { exp: x.iat + 600000 });
         return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(ion, exp, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('state'))(uri);
     }
     static encodeState(state) {
@@ -302,27 +300,18 @@ class Auth {
         const obj = x => JSON.parse(x);
         return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(dec, obj, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('decodeState'))(state);
     }
-    static session(nonce, state) {
-        const str = x => [x[0], JSON.stringify(x[1])];
-        const enc = x => [x[0], window.btoa(x[1])];
-        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(str, enc, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('session'))(arguments);
+    static store(param) {
+        const set = x => (window.localStorage.setItem(param.nonce, param.state), x);
+        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(set, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('store'))(param);
     }
-    static store(pair) {
-        const set = x => [x, window.localStorage.setItem(...x)][0];
-        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(set, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('store'))(pair);
-    }
-    static params(params) {
+    static param(param) {
         const ent = x => Object.entries(x);
         const map = x => x.map(([k, v]) => `${k}=${v}`);
         const jon = x => x.join('&');
         const rep = x => x.replace(/ /g, '%20');
-        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(ent, map, jon, rep, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('params'))(params);
+        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(ent, map, jon, rep, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('param'))(param);
     }
-    static paramObj(params, nonce, state) {
-        const mrg = x => y => z => Object.assign({}, x, y, z);
-        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(mrg)(params)(nonce)(state);
-    }
-    static uri(url, params) {
+    static uri(url, param) {
         const uri = x => [...x].join('?');
         return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(uri, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('uri'))(arguments);
     }
@@ -454,7 +443,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<p>auth works!</p>\r\n\r\n<button (click)=\"authGoogle()\">Login with Google</button>\r\n<button (click)=\"test()\">Test</button>\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<p>auth works!</p>\r\n\r\n<button (click)=\"google()\">Login with Google</button>\r\n<button (click)=\"test()\">Test</button>\r\n");
 
 /***/ }),
 
