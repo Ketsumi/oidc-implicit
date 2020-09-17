@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --baseHref=/oidc-implicit/ && echo $PWD && ls",
+    "build": "ng build --baseHref=/oidc-implicit/ && cd dist/oidc-implicit && cp index.html 404.html",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
