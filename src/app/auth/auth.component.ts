@@ -14,7 +14,7 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public googleURI(): void {
+  public googleURI({uri,param}={ ...env.google() }): void {
     const dat = x => ({ uri: x[0], par: x[1] });
     const non = x => ({ ...x, par: { ...x.par, nonce: Auth.nonce(3) } });
     const sta = x => ({ ...x, par: { ...x.par, state: Auth.state({ redirectUrl: '/profile' }) } });
