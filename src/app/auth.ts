@@ -1,5 +1,4 @@
 import { Pipe } from './pipe';
-import { environment } from '../environments/environment';
 
 export class Auth {
   constructor() { }
@@ -13,11 +12,13 @@ export class Auth {
     return Pipe.pipe(arr, val, str, enc, Pipe.trace('nonce'))(size);
   }
 
-  static state(uri: any) {
-    const ion = x => x = { ...x, iat: new Date().getTime() };
-    const exp = x => x = { ...x, exp: x.iat + 600000 };
+  static state(uri: any, encode: boolean=true) {
+    const ion = x => Object.assign({}, { ...x, iat: new Date().getTime() });
+    const exp = x => Object.assign({}, { ...x, exp: x.iat + 600000 });
+    const str = x => !encode ? x : JSON.stringify(x);
+    const enc = x => !encode ? x : window.btoa(x);
 
-    return Pipe.pipe(ion, exp, Pipe.trace('state'))(uri);
+    return Pipe.pipe(ion, exp, str, enc, Pipe.trace('state'))(uri);
   }
 
   static encodeState(state: any) {
@@ -34,10 +35,10 @@ export class Auth {
     return Pipe.pipe(dec, obj, Pipe.trace('decodeState'))(state);
   }
 
-  static store(param: any) {
-    const set = x => (window.localStorage.setItem(param.nonce, param.state), x);
+  static store(param: URLSearchParams, key: string, val: string) {
+    const set = x => (window.localStorage.setItem(x[0].get(x[1]), x[0].get(x[2])), x);
 
-    return Pipe.pipe(set, Pipe.trace('store'))(param);
+    return Pipe.pipe(set, Pipe.trace('store'))(arguments);
   }
 
   static param(param: any) {
@@ -47,11 +48,5 @@ export class Auth {
     const rep = x => x.replace(/ /g, '%20');
 
     return Pipe.pipe(ent, map, jon, rep, Pipe.trace('param'))(param);
-  }
-
-  static uri(url:string, param:string) {
-    const uri = x => [...x].join('?');
-
-    return Pipe.pipe(uri, Pipe.trace('uri'))(arguments);
   }
 }

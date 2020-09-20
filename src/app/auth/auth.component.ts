@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Auth } from '../auth';
 import { Pipe } from '../pipe';
-import { environment } from '../../environments/environment';
+import { environment as env } from '../../environments/environment';
 
 @Component({
   selector: 'app-auth',
@@ -14,17 +14,29 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public google(): void {
-    const non = x => x = { ...x, nonce: Auth.nonce(3) };
-    const sta = x => x = { ...x, state: Auth.state({ redirectUrl: '/profile' }) };
-    const enc = x => x = { ...x, state: Auth.encodeState(x.state) };
-    const str = x => Auth.store(x);
-    const par = x => Auth.param(x);
-    const uri = x => Auth.uri('https://accounts.google.com/o/oauth2/v2/auth', x);
-    const pip = Pipe.pipe(non, sta, enc, str, par, uri)(environment.google.param)
+  public googleURI(): void {
+    const dat = x => ({ uri: x[0], par: x[1] });
+    const non = x => ({ ...x, par: { ...x.par, nonce: Auth.nonce(3) } });
+    const sta = x => ({ ...x, par: { ...x.par, state: Auth.state({ redirectUrl: '/profile' }) } });
+    const par = x => ({ ...x, par: new URLSearchParams(x.par) });
+    const loc = x => (Auth.store(x.par, 'nonce', 'state'), x);
+    const url = x => new URL(`${x.uri}?${x.par.toString()}`);
+    const lnk = x => x.href;
+
+    const pip = Pipe.pipe(dat, non, sta, par, loc, url, lnk)([uri, param]);
 
     window.location.assign(pip);
   }
 
-  public test(): void { }
+  public test({uri,param}={ ...env.google() }): void {
+    const dat = x => ({ uri: x[0], par: x[1] });
+    const non = x => ({ ...x, par: { ...x.par, nonce: Auth.nonce(3) } });
+    const sta = x => ({ ...x, par: { ...x.par, state: Auth.state({ redirectUrl: '/profile' }) } });
+    const par = x => ({ ...x, par: new URLSearchParams(x.par) });
+    const loc = x => (Auth.store(x.par, 'nonce', 'state'), x);
+    const url = x => new URL(`${x.uri}?${x.par.toString()}`);
+    const lnk = x => x.href;
+    
+    Pipe.pipe(dat, non, sta, par, loc, url, lnk, Pipe.trace('test'))([uri, param]);
+  }
 }
