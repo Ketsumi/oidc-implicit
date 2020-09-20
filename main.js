@@ -63,18 +63,20 @@ __webpack_require__.r(__webpack_exports__);
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-const environment = {
+const environment = Object.freeze({
     production: false,
-    google: {
-        url: 'https://accounts.google.com/o/oauth2/v2/auth',
-        param: {
-            response_type: 'id_token',
-            client_id: '986484840298-lg8and8ts23n47cgs1thkgk5a2uroge0.apps.googleusercontent.com',
-            scope: 'openid email',
-            redirect_uri: 'https://ketsumi.github.io/oidc-implicit/callback'
-        }
+    google: function () {
+        return {
+            uri: 'https://accounts.google.com/o/oauth2/v2/auth',
+            param: {
+                response_type: 'id_token',
+                client_id: '986484840298-lg8and8ts23n47cgs1thkgk5a2uroge0.apps.googleusercontent.com',
+                scope: 'openid email',
+                redirect_uri: 'https://ketsumi.github.io/oidc-implicit/callback'
+            }
+        };
     }
-};
+});
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
@@ -177,17 +179,27 @@ let AuthComponent = class AuthComponent {
     constructor() { }
     ngOnInit() {
     }
-    google() {
-        const non = x => x = Object.assign(Object.assign({}, x), { nonce: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].nonce(3) });
-        const sta = x => x = Object.assign(Object.assign({}, x), { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].state({ redirectUrl: '/profile' }) });
-        const enc = x => x = Object.assign(Object.assign({}, x), { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].encodeState(x.state) });
-        const str = x => _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].store(x);
-        const par = x => _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].param(x);
-        const uri = x => _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].uri('https://accounts.google.com/o/oauth2/v2/auth', x);
-        const pip = _pipe__WEBPACK_IMPORTED_MODULE_5__["Pipe"].pipe(non, sta, enc, str, par, uri)(_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].google.param);
+    googleURI({ uri, param } = Object.assign({}, _environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].google())) {
+        const dat = x => ({ uri: x[0], par: x[1] });
+        const non = x => (Object.assign(Object.assign({}, x), { par: Object.assign(Object.assign({}, x.par), { nonce: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].nonce(3) }) }));
+        const sta = x => (Object.assign(Object.assign({}, x), { par: Object.assign(Object.assign({}, x.par), { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].state({ redirectUrl: '/profile' }) }) }));
+        const par = x => (Object.assign(Object.assign({}, x), { par: new URLSearchParams(x.par) }));
+        const loc = x => (_auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].store(x.par, 'nonce', 'state'), x);
+        const url = x => new URL(`${x.uri}?${x.par.toString()}`);
+        const lnk = x => x.href;
+        const pip = _pipe__WEBPACK_IMPORTED_MODULE_5__["Pipe"].pipe(dat, non, sta, par, loc, url, lnk)([uri, param]);
         window.location.assign(pip);
     }
-    test() { }
+    test({ uri, param } = Object.assign({}, _environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].google())) {
+        const dat = x => ({ uri: x[0], par: x[1] });
+        const non = x => (Object.assign(Object.assign({}, x), { par: Object.assign(Object.assign({}, x.par), { nonce: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].nonce(3) }) }));
+        const sta = x => (Object.assign(Object.assign({}, x), { par: Object.assign(Object.assign({}, x.par), { state: _auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].state({ redirectUrl: '/profile' }) }) }));
+        const par = x => (Object.assign(Object.assign({}, x), { par: new URLSearchParams(x.par) }));
+        const loc = x => (_auth__WEBPACK_IMPORTED_MODULE_4__["Auth"].store(x.par, 'nonce', 'state'), x);
+        const url = x => new URL(`${x.uri}?${x.par.toString()}`);
+        const lnk = x => x.href;
+        _pipe__WEBPACK_IMPORTED_MODULE_5__["Pipe"].pipe(dat, non, sta, par, loc, url, lnk, _pipe__WEBPACK_IMPORTED_MODULE_5__["Pipe"].trace('test'))([uri, param]);
+    }
 };
 AuthComponent.ctorParameters = () => [];
 AuthComponent = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
@@ -285,10 +297,12 @@ class Auth {
         const enc = x => window.btoa(x);
         return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(arr, val, str, enc, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('nonce'))(size);
     }
-    static state(uri) {
-        const ion = x => x = Object.assign(Object.assign({}, x), { iat: new Date().getTime() });
-        const exp = x => x = Object.assign(Object.assign({}, x), { exp: x.iat + 600000 });
-        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(ion, exp, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('state'))(uri);
+    static state(uri, encode = true) {
+        const ion = x => Object.assign({}, Object.assign(Object.assign({}, x), { iat: new Date().getTime() }));
+        const exp = x => Object.assign({}, Object.assign(Object.assign({}, x), { exp: x.iat + 600000 }));
+        const str = x => !encode ? x : JSON.stringify(x);
+        const enc = x => !encode ? x : window.btoa(x);
+        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(ion, exp, str, enc, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('state'))(uri);
     }
     static encodeState(state) {
         const str = x => JSON.stringify(x);
@@ -300,9 +314,9 @@ class Auth {
         const obj = x => JSON.parse(x);
         return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(dec, obj, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('decodeState'))(state);
     }
-    static store(param) {
-        const set = x => (window.localStorage.setItem(param.nonce, param.state), x);
-        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(set, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('store'))(param);
+    static store(param, key, val) {
+        const set = x => (window.localStorage.setItem(x[0].get(x[1]), x[0].get(x[2])), x);
+        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(set, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('store'))(arguments);
     }
     static param(param) {
         const ent = x => Object.entries(x);
@@ -310,10 +324,6 @@ class Auth {
         const jon = x => x.join('&');
         const rep = x => x.replace(/ /g, '%20');
         return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(ent, map, jon, rep, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('param'))(param);
-    }
-    static uri(url, param) {
-        const uri = x => [...x].join('?');
-        return _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].pipe(uri, _pipe__WEBPACK_IMPORTED_MODULE_0__["Pipe"].trace('uri'))(arguments);
     }
 }
 
@@ -443,7 +453,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<p>auth works!</p>\r\n\r\n<button (click)=\"google()\">Login with Google</button>\r\n<button (click)=\"test()\">Test</button>\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<p>auth works!</p>\r\n\r\n<button (click)=\"googleURI()\">Login with Google</button>\r\n<button (click)=\"test()\">Test</button>\r\n");
 
 /***/ }),
 
