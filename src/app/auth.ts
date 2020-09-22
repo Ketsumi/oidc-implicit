@@ -49,4 +49,11 @@ export class Auth {
 
     return Pipe.pipe(ent, map, jon, rep, Pipe.trace('param'))(param);
   }
+
+  static parseJWT(jwt: string) {
+    const spl = x => x.split('.');
+    const red = x => x.reduce((a, v) => [...a, JSON.parse(atob(v))], []);
+
+    return Pipe.pipe(spl, red, Pipe.trace('parseJWT'))(jwt);
+  }
 }

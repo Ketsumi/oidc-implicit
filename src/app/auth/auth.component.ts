@@ -14,29 +14,33 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public googleURI({uri,param}={ ...env.google() }): void {
-    const dat = x => ({ uri: x[0], par: x[1] });
-    const non = x => ({ ...x, par: { ...x.par, nonce: Auth.nonce(3) } });
-    const sta = x => ({ ...x, par: { ...x.par, state: Auth.state({ redirectUrl: '/profile' }) } });
-    const par = x => ({ ...x, par: new URLSearchParams(x.par) });
-    const loc = x => (Auth.store(x.par, 'nonce', 'state'), x);
-    const url = x => new URL(`${x.uri}?${x.par.toString()}`);
+  public googleURI({uri,par}={ ...env.google() }): void {
+    const dat = x => ({ uri: x[0], par: x[1], nonce: Auth.nonce(1) });
+    const no1 = x => ({ ...x, pa1: { ...x.par, nonce: Auth.nonce(3) } });
+    const st1 = x => ({ ...x, pa1: { ...x.pa1, state: Auth.state({ redirectUrl: '/profile', nonce: x.nonce }) } });
+    const ns2 = x => ({ ...x, pa2: { ...x.par, nonce: x.nonce, state: x.pa1.nonce } });
+    const sp1 = x => ({ ...x, sp1: new URLSearchParams(x.pa1) });
+    const sp2 = x => ({ ...x, sp2: new URLSearchParams(x.pa2) });
+    const loc = x => (Auth.store(x.sp1, 'nonce', 'state'), x);
+    const url = x => new URL(`${x.uri}?${x.sp2.toString()}`);
     const lnk = x => x.href;
 
-    const pip = Pipe.pipe(dat, non, sta, par, loc, url, lnk)([uri, param]);
+    const pip = Pipe.pipe(dat, no1, st1, ns2, sp1, sp2, loc, url, lnk)([uri, par]);
 
     window.location.assign(pip);
   }
 
-  public test({uri,param}={ ...env.google() }): void {
-    const dat = x => ({ uri: x[0], par: x[1] });
-    const non = x => ({ ...x, par: { ...x.par, nonce: Auth.nonce(3) } });
-    const sta = x => ({ ...x, par: { ...x.par, state: Auth.state({ redirectUrl: '/profile' }) } });
-    const par = x => ({ ...x, par: new URLSearchParams(x.par) });
-    const loc = x => (Auth.store(x.par, 'nonce', 'state'), x);
-    const url = x => new URL(`${x.uri}?${x.par.toString()}`);
+  public test({uri,par}={ ...env.google() }): void {
+    const dat = x => ({ uri: x[0], par: x[1], nonce: Auth.nonce(1) });
+    const no1 = x => ({ ...x, pa1: { ...x.par, nonce: Auth.nonce(3) } });
+    const st1 = x => ({ ...x, pa1: { ...x.pa1, state: Auth.state({ redirectUrl: '/profile', nonce: x.nonce }) } });
+    const ns2 = x => ({ ...x, pa2: { ...x.par, nonce: x.nonce, state: x.pa1.nonce } });
+    const sp1 = x => ({ ...x, sp1: new URLSearchParams(x.pa1) });
+    const sp2 = x => ({ ...x, sp2: new URLSearchParams(x.pa2) });
+    const loc = x => (Auth.store(x.sp1, 'nonce', 'state'), x);
+    const url = x => new URL(`${x.uri}?${x.sp2.toString()}`);
     const lnk = x => x.href;
-    
-    Pipe.pipe(dat, non, sta, par, loc, url, lnk, Pipe.trace('test'))([uri, param]);
+
+    Pipe.pipe(dat, no1, st1, ns2, sp1, sp2, loc, url, lnk, Pipe.trace('test'))([uri, par]);
   }
 }
